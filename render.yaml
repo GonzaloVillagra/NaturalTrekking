@@ -5,14 +5,9 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: npm start
-   envVars:
-  - key: DATABASE_URL
-    value: postgresql://naturaltrekkingdb_user:iwcMYlAQT7S2SFlh3er5OEKA4ufmazK7@dpg-ctteil52ng1s73c8ldlg-a.virginia-postgres.render.com/naturaltrekkingdb
-        fromDatabase:
-          name: naturaltrekkingdb
-          username: naturaltrekkingdb_user
-          port: 5432
-
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://naturaltrekkingdb_user:iwcMYlAQT7S2SFlh3er5OEKA4ufmazK7@dpg-ctteil52ng1s73c8ldlg-a.virginia-postgres.render.com/naturaltrekkingdb
       - key: JWT_SECRET
         value: claveAdmin1234
       - key: ORS_API_KEY
