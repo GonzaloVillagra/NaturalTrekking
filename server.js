@@ -17,7 +17,6 @@ const allowedOrigins = [
 // Configuración de CORS
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origen (como las de herramientas o servidores)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -30,7 +29,7 @@ app.use(cors({
 // Middleware para establecer encabezados CORS
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
+  if (origin && allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -43,26 +42,27 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 // Verificar conexión con la base de datos
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('Error conectando a la base de datos:', err.message);
-  } else {
-    console.log('Conexión exitosa a la base de datos:', res.rows[0]);
-  }
-});
+pool.query('SELECT NOW()')
+  .then(res => console.log('Conexión exitosa a la base de datos:', res.rows[0]))
+  .catch(err => console.error('Error conectando a la base de datos:', err.message));
 
 // Integrar rutas de la API
 app.use('/api', routes);
 
-// Servir archivos estáticos de la aplicación React
-app.use(express.static(path.join(__dirname, 'client/build')));
+// Servir archivos estáticos de React SOLO si existe el build
+const clientPath = path.join(__dirname, 'naturaltrekking/build');
+if (require('fs').existsSync(clientPath)) {
+  app.use(express.static(clientPath));
 
-// Manejar todas las rutas y devolver el archivo index.html de React
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+  // Manejar todas las rutas y devolver index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientPath, 'index.html'));
+  });
+} else {
+  console.warn('⚠️ No se encontró el frontend de React en "client/build". Verifica el build.');
+}
 
-// Iniciar el servidor
-app.listen(PORT, () => {
+// Iniciar el servidor en 0.0.0.0 para Render
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
