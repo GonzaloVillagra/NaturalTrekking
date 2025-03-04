@@ -1,0 +1,60 @@
+.app-header {
+  background-color: #174563; 
+  color: rgb(255, 255, 255);            
+  padding: 10px 20px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+
+.admin-panel {
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .admin-panel h1 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .admin-panel nav {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+
+
+  .admin-panel {
+    padding: 20px;
+    margin: auto;
+    max-width: 600px; 
+  }
+  
+  .admin-panel h1 {
+    text-align: center;
+  }
+  
+  .admin-panel nav {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px;
+  }
+  
+  .admin-panel button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #174563;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .admin-panel button:hover {
+    background-color: #216089;
+  }
+  
+  

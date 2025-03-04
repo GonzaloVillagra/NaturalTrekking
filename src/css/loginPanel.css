@@ -1,0 +1,85 @@
+
+/*css header*/
+.app-header {
+  background-color: #164869; 
+  padding: 10px 20px;
+  text-align: center;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 250px; 
+}
+
+.app-header img {
+  height: 100px; 
+  width: auto;
+  vertical-align: middle; 
+}
+
+.app-header h1 {
+  display: inline; 
+  margin-left: 10px;
+  color: #ffffff; 
+  font-size: 35px; 
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.header-container img {
+  height: 50px;  
+  width: auto;
+  align-items: start;
+  display: block;
+  margin: 0 auto; 
+}
+
+.header-container {
+  background-color: #202988;  
+  padding: 10px;
+  text-align: center;  
+}
+
+.login-container h2 {
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+}

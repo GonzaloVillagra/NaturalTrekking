@@ -1,0 +1,107 @@
+
+/*Css Contenedor general*/
+.transpote-contenedor {
+  max-width: 1200px; 
+  margin: auto; 
+  padding: 20px; 
+  font-family: Arial, sans-serif; 
+}
+
+/*css  header*/
+.app-header {
+  background-color: #174563;
+  color: white;
+  padding: 10px 20px;
+  text-align: center; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 30px; 
+}
+.app-header img {
+  height: 50px; 
+  vertical-align: middle;
+  margin-right: 10px; 
+}
+
+/*css  generales*/
+h2, h3 {
+  text-align: center; 
+  color: #333; 
+}
+
+p {
+  color: red; 
+  text-align: center; 
+  padding: 10px;
+}
+
+table {
+  width: 100%; 
+  margin-top: 20px;
+  border-collapse: collapse; 
+}
+
+
+th, td {
+  border: 1px solid #ccc; 
+  padding: 8px; 
+  text-align: left; 
+}
+
+th {
+  background-color: #174563; 
+  color: white; 
+}
+
+input[type="text"], input[type="time"] {
+  width: 100%; 
+  padding: 8px; 
+  margin: 10px 0; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+}
+
+/*css  boton eliminar*/
+.boton-eliminar {
+  background-color: #f9f9f9; 
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  display: block;
+  margin: 0 auto;
+}
+
+.boton-eliminar:hover {
+  background-color: #f8d1d1; 
+  transform: scale(1.05);
+}
+
+.boton-eliminar img {
+  width: 25px; 
+  height: 25px;
+  vertical-align: middle;
+}
+
+/*boton agregar*/
+.boton-agregar {
+  background-color: #f9f9f9; 
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  display: block; 
+  margin: 0 auto; 
+}
+
+.boton-agregar:hover {
+  background-color: #b1e5be; 
+  transform: scale(1.05); 
+}
+
+.boton-agregar img {
+  width: 25px; 
+  height: 25px;
+  vertical-align: middle;
+}
+

@@ -1,0 +1,30 @@
+.admin-panel {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.admin-panel h1 {
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.admin-panel nav {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.admin-panel button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-panel button:hover {
+  background-color: #0056b3;
+}

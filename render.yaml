@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: naturaltrekking
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+   envVars:
+  - key: DATABASE_URL
+    value: postgresql://naturaltrekkingdb_user:iwcMYlAQT7S2SFlh3er5OEKA4ufmazK7@dpg-ctteil52ng1s73c8ldlg-a.virginia-postgres.render.com/naturaltrekkingdb
+        fromDatabase:
+          name: naturaltrekkingdb
+          username: naturaltrekkingdb_user
+          port: 5432
+
+      - key: JWT_SECRET
+        value: claveAdmin1234
+      - key: ORS_API_KEY
+        value: 5b3ce3597851110001cf624809bbb23ff97f47babf665274bf269e35
+      - key: REACT_APP_API_URL
+        value: https://naturaltrekking.onrender.com/
+    routes:
+      - type: rewrite
+        source: /.*
+        destination: /index.html
+
+databases:
+  - name: naturaltrekkingdb
+    engine: postgresql
+    version: 16
+    plan: free
+    ipAllowList: []

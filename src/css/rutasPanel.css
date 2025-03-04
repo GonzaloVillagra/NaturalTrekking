@@ -1,0 +1,100 @@
+
+/* css header */
+.app-header {
+  background-color: #174563;
+  padding: 10px 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* css contenedor ruta version ordenada */
+.contenedor-rutas {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.contenedor-rutas h2, .contenedor-rutas h3 {
+  text-align: center;
+  color: #333;
+}
+
+.contenedor-rutas label {
+  display: block;
+  margin-bottom: 10px;
+  color: #555;
+}
+.contenedor-rutas input[type="text"],
+.contenedor-rutas textarea,
+.contenedor-rutas select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.routes-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.route-detail {
+  margin-bottom: 5px;
+}
+
+p {
+  color: red; 
+  text-align: center;
+}
+.lista-rutas {
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/*css botones generales */
+.botones {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+/*css botones especificos */
+.boton-iniciar, .boton-detener, .boton-finalizar, .boton-hito, .boton-detalle, .boton-eliminar {
+  background-color: #f9f9f9;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
+  transition: opacity 0.3s; 
+}
+
+
+.boton-iniciar img, .boton-detener img, .boton-finalizar img, .boton-hito img, .boton-detalle img {
+  margin-right: 15px; 
+  width: 20px; 
+  height: 20px; 
+}
+
+.boton-iniciar:hover, .boton-detener:hover, .boton-finalizar:hover, .boton-hito:hover, .boton-eliminar {
+  opacity: 0.9;
+  background-color: #f8d1d1;
+}
+
+.boton-iniciar:hover, .boton-detalle:hover {
+  background-color: #b1e5be;
+}
+
+

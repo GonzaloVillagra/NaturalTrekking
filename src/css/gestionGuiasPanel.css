@@ -1,0 +1,134 @@
+/*css header*/
+.app-header {
+  background-color: #174563; 
+  color: white; 
+  padding: 10px 20px; 
+  text-align: center; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom: 30px; 
+}
+
+.app-header img {
+  height: 50px;
+  vertical-align: middle; 
+  margin-right: 10px; 
+}
+
+
+/* css Estilos generales */
+
+input[type="email"], input[type="text"], input[type="password"], select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+}
+
+.error, .success {
+  color: white;
+  padding: 10px;
+  margin: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.error {
+  background-color: #f44336; /* Rojo para errores */
+}
+
+.success {
+  background-color: #4CAF50; /* Verde para mensajes de éxito */
+}
+
+
+
+/* css para botones */
+.boton-agregar, .boton-eliminar {
+  background-color: #ffffff; 
+  color: #000000; 
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin-top: 10px;
+  text-align: center; 
+}
+
+.boton-agregar img, .boton-eliminar img {
+  width: 20px; 
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* css generales */
+table {
+  width: 100%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #174563; 
+  color: white;
+}
+
+/* css listas */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+/* Estilos para formularios con elementos en línea */
+.formulario {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+  margin-bottom: 10px; 
+  padding: 0 20px; 
+  width: 100%; 
+}
+
+.formulario label, .formulario select, .formulario input, .formulario button {
+  flex-grow: 1; 
+  margin-right: 10px; 
+}
+
+form {
+  width: 100%;
+  max-width: none; 
+}
+
+
+/* css lista de guias*/
+.lista-guias {
+  list-style: none;
+  padding: 0; 
+  margin: 20px 0; 
+}
+
+.lista-guias li {
+  background-color: #f9f9f9; 
+  border: 1px solid #ccc; 
+  padding: 10px;
+  margin-bottom: 10px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
