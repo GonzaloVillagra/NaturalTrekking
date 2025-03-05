@@ -13,7 +13,7 @@ services:
       - key: ORS_API_KEY
         value: 5b3ce3597851110001cf624809bbb23ff97f47babf665274bf269e35
       - key: REACT_APP_API_URL
-        value: https://naturaltrekking.onrender.com/
+        value: localhost:10000
     routes:
       - type: rewrite
         source: /.*

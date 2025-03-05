@@ -25,7 +25,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('/api/login', formData, {
+      const response = await axios.post('/api/auth/login', formData, {
         headers: { 'Content-Type': 'application/json' },
       });
       console.log('Respuesta del servidor:', response.data);
