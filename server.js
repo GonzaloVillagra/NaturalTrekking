@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const routes = require('./src/routes/routes'); 
 const pool = require('./src/db/dbConfig');
+const fs = require('fs');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,8 +52,9 @@ pool.query('SELECT NOW()')
 app.use('/api', routes);
 
 // Servir archivos estáticos de React SOLO si existe el build
-const clientPath = path.join(__dirname, 'client/build');
-if (require('fs').existsSync(clientPath)) {
+const clientPath = path.join(__dirname, 'naturaltrekking/build');
+
+if (fs.existsSync(clientPath)) {
   app.use(express.static(clientPath));
 
   // Manejar todas las rutas y devolver index.html
@@ -59,7 +62,7 @@ if (require('fs').existsSync(clientPath)) {
     res.sendFile(path.join(clientPath, 'index.html'));
   });
 } else {
-  console.warn('⚠️ No se encontró el frontend de React en "client/build". Verifica el build.');
+  console.warn('⚠️ No se encontró el frontend de React en "naturaltrekking/build". Verifica el build.');
 }
 
 app.listen(PORT, () => {
