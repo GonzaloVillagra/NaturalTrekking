@@ -52,7 +52,7 @@ pool.query('SELECT NOW()')
 app.use('/api', routes);
 
 // Servir archivos estáticos de React SOLO si existe el build
-const clientPath = path.join(__dirname, 'naturaltrekking/build');
+const clientPath = path.join(__dirname, 'build');
 
 if (fs.existsSync(clientPath)) {
   app.use(express.static(clientPath));
@@ -62,7 +62,7 @@ if (fs.existsSync(clientPath)) {
     res.sendFile(path.join(clientPath, 'index.html'));
   });
 } else {
-  console.warn('⚠️ No se encontró el frontend de React en "naturaltrekking/build". Verifica el build.');
+  console.warn('⚠️ No se encontró el frontend de React en "build". Verifica el build.');
 }
 
 app.listen(PORT, () => {
