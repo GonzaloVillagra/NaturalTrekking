@@ -62,7 +62,6 @@ if (require('fs').existsSync(clientPath)) {
   console.warn('⚠️ No se encontró el frontend de React en "client/build". Verifica el build.');
 }
 
-// Iniciar el servidor en 0.0.0.0 para Render
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });

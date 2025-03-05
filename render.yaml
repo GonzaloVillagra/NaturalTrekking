@@ -3,8 +3,8 @@ services:
     name: naturaltrekking
     env: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
     envVars:
       - key: DATABASE_URL
         value: postgresql://naturaltrekkingdb_user:iwcMYlAQT7S2SFlh3er5OEKA4ufmazK7@dpg-ctteil52ng1s73c8ldlg-a.virginia-postgres.render.com/naturaltrekkingdb
@@ -13,7 +13,9 @@ services:
       - key: ORS_API_KEY
         value: 5b3ce3597851110001cf624809bbb23ff97f47babf665274bf269e35
       - key: REACT_APP_API_URL
-        value: localhost:10000
+        value: https://naturaltrekking.onrender.com
+      - key: PORT
+        value: 10000
     routes:
       - type: rewrite
         source: /.*
