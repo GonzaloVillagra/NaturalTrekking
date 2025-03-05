@@ -50,7 +50,7 @@ pool.query('SELECT NOW()')
 app.use('/api', routes);
 
 // Servir archivos estáticos de React SOLO si existe el build
-const clientPath = path.join(__dirname, 'naturaltrekking/build');
+const clientPath = path.join(__dirname, 'client/build');
 if (require('fs').existsSync(clientPath)) {
   app.use(express.static(clientPath));
 
