@@ -23,15 +23,14 @@ const App = () => {
       setUserType(userType);
     }
     setLoading(false);
-  }, []);
+  }, []); // Asegúrate de que el array de dependencias esté vacío
 
   if (loading) {
     return <div>Loading...</div>; 
   }
 
   const isAdmin = isAuthenticated && userType === 'admin';
-  const isGuia = isAuthenticated && userType === 'guia';
-  const correoGuia = 'guia1@naturaltrekking.com';
+  const isGuia = isAuthenticated && userType === 'guias';
 
   return (
     <Router>
@@ -44,7 +43,7 @@ const App = () => {
         <Route path="/admin/hitos" element={isAdmin ? <ManejoHitos /> : <Navigate to="/" />} />
         <Route path='/admin/clientes' element={isAdmin ? <ManejoCliente /> : <Navigate to="/" />} />
         <Route path='/admin/transportes' element={isAdmin ? <ManejoTransportes /> : <Navigate to="/" />} />
-        <Route path="/guias" element={isGuia ? <GuiaDashboard correo={correoGuia} /> : <Navigate to="/" />} />
+        <Route path="/guias" element={isGuia ? <GuiaDashboard /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );

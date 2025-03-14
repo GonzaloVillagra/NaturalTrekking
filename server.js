@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 // Orígenes permitidos para CORS
 const allowedOrigins = [
-  'http://localhost:3000', 
+  'http://localhost:5000', 
   'https://naturaltrekking.onrender.com'
 ];
 

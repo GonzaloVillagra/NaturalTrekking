@@ -57,8 +57,7 @@ const ManejoRutas = () => {
   //cargar Ruta en el mapa
   const cargarRutaEnMapa = (nombre) => {
     navigate(`/admin/rutas/${nombre}/`);
-  };
-  
+  };  
 
 
   //manejo de botones VARCHAR
@@ -321,19 +320,3 @@ return (
 };
 
 export default ManejoRutas;
-
-
-/* Carcar la ruta en el mapa
-  const generarRutaGps = async () => {
-    const inicio = { longitude: -33.555770, latitude: -70.561515 }; // Ejemplo: Santiago, Chile
-    const fin = { longitude: -33.579576, latitude: -70.558842 }; // Ejemplo: Destino
-    try {
-      const response = await axios.post('/api/admin/rutas/gps', { inicio, fin });
-      setRutaGps(response.data); 
-    } catch (error) {
-      console.error('Error al generar la ruta GPS:', error.message);
-    }
-  };
-  <button onClick={() => generarRutaGps(rutas)}className="boton-iniciar">
-              <img src='/img/play.png' alt="play"/>Cargar Ruta en Mapa</button>*/
-

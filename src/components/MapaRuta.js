@@ -40,7 +40,7 @@ const MapaRuta = ({ rutaGps, seguirRuta }) => {
 
   useEffect(() => {
     obtenerUbicacion();
-  }, []);
+  }, [rutaGps]);
 
   useEffect(() => {
     if (seguirRuta) {

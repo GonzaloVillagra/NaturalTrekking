@@ -17,7 +17,6 @@ const DetalleDeRuta = () => {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
     });
   };
 
@@ -61,7 +60,8 @@ const DetalleDeRuta = () => {
           <p>{detalle.descripcion}</p>
           <p className="dificultad">Dificultad: {detalle.dificultad}</p>
           <p className="distancia">Distancia: {detalle.distancia_km} km</p>
-          {detalle.ruta_gps && <MapaRuta rutaGps={detalle.ruta_gps} ubicacionActual={detalle.inicio} />}
+          <p className="tiempo de ruta">Distancia: {detalle.tiempo_estimado}</p>
+          {detalle.ruta_gps && <MapaRuta rutaGps={detalle.ruta_gps} />}
           <div>
           <h2>Comentarios</h2>
       {comentarios.map((comentario, index) => (

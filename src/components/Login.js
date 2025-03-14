@@ -10,7 +10,6 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log(`Campo "${name}" actualizado: ${value}`);
   };
 
   const handleSubmit = async (e) => {
@@ -18,9 +17,7 @@ const Login = () => {
     console.log('Enviando datos de login:', formData);
 
     if (!formData.correo || !formData.contraseña) {
-      const msg = 'Por favor completa todos los campos';
-      setMessage(msg);
-      console.log(msg);
+      setMessage('Por favor completa todos los campos');
       return;
     }
 
@@ -28,24 +25,26 @@ const Login = () => {
       const response = await axios.post('/api/auth/login', formData, {
         headers: { 'Content-Type': 'application/json' },
       });
+
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data.token) {
         localStorage.setItem('userType', response.data.user.tipo);
         localStorage.setItem('token', response.data.token);
-        console.log('Login exitoso. Token y tipo de usuario almacenados.');
+        console.log('Login exitoso. Token y tipo de usuario almacenados.', response.data);
 
-        if (response.data.user.tipo === 'admin') {
-          console.log('Usuario admin. Redireccionando a /admin');
-          navigate('/admin');
-        } else if (response.data.user.tipo === 'guia') {
-          console.log('Usuario guía. Redireccionando a /guias');
-          navigate('/guias');
-        } else {
-          const unknownMsg = 'Tipo de usuario desconocido';
-          setMessage(unknownMsg);
-          console.log(unknownMsg, response.data.user.tipo);
-        }
+        setTimeout(() => {
+          console.log("Redirigiendo a:", response.data.user.tipo);
+          if (response.data.user.tipo === 'admin') {
+            navigate('/admin');
+          } else if (response.data.user.tipo === 'guia') {
+            navigate('/guias');
+          } else {
+            setMessage('Tipo de usuario desconocido');
+          }
+        }, 100);
+      } else {
+        setMessage('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
       }
     } catch (error) {
       const errorMsg = error.response ? error.response.data.message : 'Error de red o servidor';
