@@ -1,6 +1,6 @@
 const express = require('express');
 const { asignarRuta, cambiarRutaGuia ,obtenerGuias, crearGuia, eliminarGuia, obtenerNombresRutas, asignarTransporte } = require('../controllers/guideController');
-const { obtenerRutas, eliminarRuta, obtenerRutaDesdeAPI, agregarRuta, obtenerDetalleRuta, obtenerComentarios } = require('../controllers/routeController');
+const { finalizarRuta, obtenerRutas, eliminarRuta, obtenerRutaDesdeAPI, agregarRuta, obtenerDetalleRuta, obtenerComentarios } = require('../controllers/routeController');
 const { obtenerTransporte, crearTransporte, eliminarTransporte } = require('../controllers/carController');
 const { obtenerCliente, crearCliente,eliminarCliente} = require('../controllers/clientController')
 const { crearHito } = require('../controllers/hitosController')
