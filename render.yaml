@@ -9,7 +9,7 @@ services:
     startCommand: node server.js
     envVars:
       - key: DATABASE_URL
-        value: postgresql://naturaltrekkingdb_aiu9_user:v57uParzSfFhnXn7YqYzQMWEWIkTX7Pp@dpg-cv72psvnoe9s73c3s0lg-a.virginia-postgres.render.com/naturaltrekkingdb_aiu9
+        value: postgresql://postgres:16945436@Aa1234@db.tqyvpdjbqxwenmuuzhul.supabase.co:5432/postgres
       - key: JWT_SECRET
         value: claveAdmin1234
       - key: ORS_API_KEY
