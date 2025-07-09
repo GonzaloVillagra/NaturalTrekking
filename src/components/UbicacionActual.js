@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 const UbicacionActual = () => {
   const [ubicacion, setUbicacion] = useState(null); 
   const [error, setError] = useState(''); 
+  
   const obtenerUbicacion = () => {
     if (!navigator.geolocation) {
       setError('La geolocalización no es soportada por este navegador.');

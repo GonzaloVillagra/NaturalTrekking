@@ -1,10 +1,9 @@
 import React from 'react';
 import axios from '../api/axiosConfig';
-import UbicacionActual from './UbicacionActual';
 import  {useState} from 'react';
 
 const AgregarHito = ({ nombreRuta }) => {
-  const { location, error } = UbicacionActual();
+  const { location, error, UbicacionActual } = UbicacionActual();
   const [nombreHito, setNombreHito] = useState('');
   const [descripcionHito, setDescripcionHito] = useState('');
   const [imagenUrlHito, setImagenUrlHito] = useState('');

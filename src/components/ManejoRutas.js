@@ -17,6 +17,8 @@ const ManejoRutas = () => {
   const [descripcionHito, setDescripcionHito] = useState('');
   const [nombreRuta, setNombreRuta] = useState('');
   const [imagenUrlHito, setImagenUrlHito] = useState('');
+  const [hitos, setHitos] = useState([]); // Estado para almacenar los hitos
+  // Estado para manejar el watchId de geolocalización
 
   const [watchId, setWatchId] = useState(null)
 
@@ -53,7 +55,8 @@ const ManejoRutas = () => {
     }
   };
 
- 
+
+
   //cargar Ruta en el mapa
   const cargarRutaEnMapa = (nombre) => {
     navigate(`/admin/rutas/${nombre}/`);
@@ -121,7 +124,7 @@ const ManejoRutas = () => {
         ruta_gps: JSON.stringify(geojsonRuta),
       });
       setMensaje('Ruta guardada exitosamente.');
-      setDatosRuta({ nombre: '', descripcion: '', dificultad: 'baja' }); 
+      setDatosRuta({ nombre: '', descripcion: '', dificultad: 'Nivel Dificultad' }); 
       cargarRutasGuardadas(); 
       console.log('Ruta guardada:', response.data);
     } catch (error) {
@@ -179,7 +182,7 @@ const ManejoRutas = () => {
   };
 
   //Agregar Hitos
-  const agregarHito = async () => {
+  const agregarHito = () => {
     if (!ubicacionActual) {
       setError('Ubicación no disponible.');
       return;
@@ -188,22 +191,15 @@ const ManejoRutas = () => {
     const hito = {
       nombre: nombreHito,
       descripcion: descripcionHito,
-      ubicacion: `POINT(${ubicacionActual.lng} ${ubicacionActual.lat})`, 
+      ubicacion: { lat: ubicacionActual.lat, lng: ubicacionActual.lng }, 
       imagen_url: imagenUrlHito || null, 
-      nombre_ruta: nombreRuta 
     };
 
-    try {
-      await axios.post('/api/admin/hitos', hito);
-      setMensaje('Hito agregado con éxito');
-      setNombreHito('');
-      setDescripcionHito('');
-      setImagenUrlHito('');
-      setNombreRuta('');
-    } catch (error) {
-      console.error('Error al agregar el hito:', error);
-      setError('No se pudo agregar el hito');
-    }
+    setHitos([...hitos, hito]);
+    setNombreHito('');  
+    setDescripcionHito('');
+    setImagenUrlHito('');
+    setMensaje('Hito agregado exitosamente.');
   };
 //-------------------------Visualizaciones-----------------------//
 return (
@@ -299,6 +295,14 @@ return (
             <div className="route-detail">
               <strong>Distancia:</strong> {rutas.distancia_km} km
             </div>
+              <h4>Hitos agregados:</h4>
+              <ul>
+                {hitos.map((h, idx) => (
+                  <li key={idx}>
+                    {h.nombre} - {h.descripcion}
+                  </li>
+                ))}
+              </ul>
             <div class="botones">
               <button onClick={() => cargarRutaEnMapa(rutas.nombre)}className="boton-detalle">
               <img src='/img/info.png' alt="localizacion"/>Detalles Sobre la ruta</button>
