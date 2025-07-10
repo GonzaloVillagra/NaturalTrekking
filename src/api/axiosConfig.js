@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configura la instancia de Axios
 const axiosInstance = axios.create({
 
-  baseURL:'http://localhost:5000 || https://tqyvpdjbqxwenmuuzhul.supabase.co',
+  baseURL:'https://tqyvpdjbqxwenmuuzhul.supabase.co',
   headers: {
     'Content-Type': 'application/json',
   },
