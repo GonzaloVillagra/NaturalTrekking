@@ -9,6 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.4",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -61,5 +62,4 @@
   "bugs": {
     "url": "https://github.com/GonzaloVillagra/NaturalTrekking/issues"
   }
-  
 }

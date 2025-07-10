@@ -7,8 +7,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
-  },
-  family: 4 // Forzar IPv4, útil si hay problemas con IPv6
+  }
 });
 
 pool.on('connect', () => {
