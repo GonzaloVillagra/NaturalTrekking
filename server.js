@@ -5,7 +5,7 @@ const path = require('path');
 const routes = require('./src/routes/routes'); 
 const pool = require('./src/db/dbConfig');
 const fs = require('fs');
-import { SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
 
 const app = express();
