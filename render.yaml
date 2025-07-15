@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: |
-      cd naturaltrekking && npm install && npm run build
-      cd .. && npm install
+      npm install
+      npm run build
     startCommand: node server.js
     envVars:
       - key: DATABASE_URL
@@ -16,11 +16,9 @@ services:
         value: 5b3ce3597851110001cf624809bbb23ff97f47babf665274bf269e35
       - key: REACT_APP_API_URL
         value: https://naturaltrekking.onrender.com
-      - key: PORT
-        value: 10000
     routes:
       - type: rewrite
-        source: /.*
+        source: /!(api|static|assets)/*
         destination: /index.html
 
 databases:
