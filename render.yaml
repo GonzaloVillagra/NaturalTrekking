@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: |
-      npm install
-      npm run build
+      cd naturaltrekking && npm install && npm run build
+      cd .. && npm install
     startCommand: node server.js
     envVars:
       - key: DATABASE_URL
