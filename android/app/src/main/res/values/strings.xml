@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NaturalTrekking</string>
+    <string name="title_activity_main">NaturalTrekking</string>
+    <string name="package_name">cl.naturaltrekking.app</string>
+    <string name="custom_url_scheme">cl.naturaltrekking.app</string>
+    <string name="capacitor_background_geolocation_notification_channel_name">Grabando Ruta</string>
+    <string name="capacitor_background_geolocation_notification_icon">mipmap/ic_launcher</string>
+    <string name="capacitor_background_geolocation_notification_title">Natural Trekking</string>
+    <string name="capacitor_background_geolocation_notification_text">El GPS está activo en segundo plano.</string>
+</resources>

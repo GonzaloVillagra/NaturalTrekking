@@ -1,100 +1,221 @@
-
-/* css header */
-.app-header {
-  background-color: #174563;
-  padding: 10px 20px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-/* css contenedor ruta version ordenada */
-.contenedor-rutas {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin: 0 auto;
-  max-width: 800px;
-}
-
-.contenedor-rutas h2, .contenedor-rutas h3 {
-  text-align: center;
-  color: #333;
-}
-
-.contenedor-rutas label {
-  display: block;
-  margin-bottom: 10px;
-  color: #555;
-}
-.contenedor-rutas input[type="text"],
-.contenedor-rutas textarea,
-.contenedor-rutas select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-.routes-container ul {
-  list-style: none;
+/* SUDA-style Mobile Container */
+.mobile-app-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg-gradient);
   padding: 0;
 }
 
-.route-detail {
-  margin-bottom: 5px;
+.mobile-app-container {
+  width: 100%;
+  max-width: 430px; /* Tamaño típico de smartphone */
+  height: 100vh;
+  max-height: 900px;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
-p {
-  color: red; 
-  text-align: center;
-}
-.lista-rutas {
-  background-color: #ffffff;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
+@media (min-width: 450px) {
+  .mobile-app-container {
+    height: 90vh;
+    border-radius: 30px;
+    border: 8px solid #222;
+  }
 }
 
-/*css botones generales */
-.botones {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 10px; 
+/* El mapa como fondo */
+.map-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
-/*css botones especificos */
-.boton-iniciar, .boton-detener, .boton-finalizar, .boton-hito, .boton-detalle, .boton-eliminar {
-  background-color: #f9f9f9;
-  color: rgb(0, 0, 0);
+/* Heads Up Display (Arriba) */
+.hud-top {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 15px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.hud-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.hud-stat span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hud-stat strong {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Floating Action Buttons (FAB) */
+.fab-container {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 15;
+}
+
+.fab {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
   cursor: pointer;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+}
+
+.fab:active {
+  transform: scale(0.9);
+}
+
+.fab-main {
+  width: 85px;
+  height: 85px;
+  background: #f97316; /* Naranja SUDA */
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.fab-main.recording {
+  background: #ef4444; /* Rojo para grabar */
+  animation: pulse-record 2s infinite;
+}
+
+.fab-main.paused {
+  background: #eab308; /* Amarillo pausa */
+}
+
+@keyframes pulse-record {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.fab-secondary {
+  width: 60px;
+  height: 60px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Bottom Sheet */
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  margin-bottom: 10px;
-  text-align: center;
-  transition: opacity 0.3s; 
+  max-height: 80%;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px 24px 0 0;
+  padding: 20px;
+  z-index: 20;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
 }
 
-
-.boton-iniciar img, .boton-detener img, .boton-finalizar img, .boton-hito img, .boton-detalle img {
-  margin-right: 15px; 
-  width: 20px; 
-  height: 20px; 
+.bottom-sheet.closed {
+  transform: translateY(100%);
 }
 
-.boton-iniciar:hover, .boton-detener:hover, .boton-finalizar:hover, .boton-hito:hover, .boton-eliminar {
-  opacity: 0.9;
-  background-color: #f8d1d1;
+.bottom-sheet-handle {
+  width: 40px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  margin: 0 auto 20px auto;
 }
 
-.boton-iniciar:hover, .boton-detalle:hover {
-  background-color: #b1e5be;
+/* Modals */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.modal-content {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
 
+/* Navigation inside Mobile */
+.mobile-nav {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 20px;
+}
+
+.mobile-nav button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 10px;
+  font-weight: 500;
+  border-radius: 0;
+}
+
+.mobile-nav button.active {
+  color: #f97316;
+  border-bottom: 2px solid #f97316;
+  box-shadow: none;
+  background: none;
+}

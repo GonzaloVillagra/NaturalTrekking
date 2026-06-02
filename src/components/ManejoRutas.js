@@ -1,326 +1,264 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from '../api/axiosConfig';
+import { registerPlugin } from '@capacitor/core';
+import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 import MapaRuta from './MapaRuta';
 import { useNavigate } from 'react-router-dom';
-import '../css/rutasPanel.css'
+import { ArrowLeft, Play, Pause, Camera, Square, Footprints } from 'lucide-react';
+import '../css/rutasPanel.css';
+import { useRuta } from '../context/RutaContext';
 
 const ManejoRutas = () => {
   const navigate = useNavigate();
-  const [rutaGps, setRutaGps] = useState([]); 
-  const [ubicacionActual, setUbicacionActual] = useState(null); 
-  const [seguimientoActivo, setSeguimientoActivo] = useState(false);
-  const [rutasGuardadas, setRutasGuardadas] = useState([]);
-  const [error, setError] = useState('');
-  const [mensaje, setMensaje] = useState('');
-  const [datosRuta, setDatosRuta] = useState({ nombre: '', descripcion: '', dificultad: ''});
+  
+  // States from Context
+  const {
+    seguimientoActivo, setSeguimientoActivo,
+    isPaused, setIsPaused,
+    rutaGps, setRutaGps,
+    ubicacionActual,
+    tiempoGrabacion,
+    hitosLocales, setHitosLocales,
+    iniciarRuta, pausarRuta, resetRuta,
+    formatTime, currentDist, simularPasoGps
+  } = useRuta();
+  
+
+  
+  // States de Hitos y Ruta Final
+
+  const [datosRuta, setDatosRuta] = useState({ nombre: '', dificultad: 'baja', descripcion: '' });
   const [nombreHito, setNombreHito] = useState('');
   const [descripcionHito, setDescripcionHito] = useState('');
-  const [nombreRuta, setNombreRuta] = useState('');
-  const [imagenUrlHito, setImagenUrlHito] = useState('');
-  const [hitos, setHitos] = useState([]); // Estado para almacenar los hitos
-  // Estado para manejar el watchId de geolocalización
-
-  const [watchId, setWatchId] = useState(null)
-
-
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          setUbicacionActual({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        error => {
-          console.error('Error al obtener la ubicación:', error);
-        },
-        { enableHighAccuracy: true }
-      );
-    } else {
-      console.log('Geolocalización no soportada por este navegador.');
-    }
-    cargarRutasGuardadas();
-  }, []);
-
-  //efecto para cargar rutas guardadas
-  const cargarRutasGuardadas = async () => {
-    try {
-      const response = await axios.get('/api/admin/rutas');
-      setRutasGuardadas(response.data);
-    } catch (error) {
-      console.error('Error al cargar las rutas:', error.message);
-      setError('Error al cargar las rutas guardadas.');
-    }
-  };
-
-
-
-  //cargar Ruta en el mapa
-  const cargarRutaEnMapa = (nombre) => {
-    navigate(`/admin/rutas/${nombre}/`);
-  };  
-
-
-  //manejo de botones VARCHAR
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDatosRuta({ ...datosRuta, [name]: value });
-  };
-
-  // Iniciar la ruta
-  const iniciarRuta = () => {
-    if (!navigator.geolocation) {
-      setError('La geolocalización no es soportada por este navegador.');
-      return;
-    }
+  const [fotoHitoUrl, setFotoHitoUrl] = useState(null);
   
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const nuevaUbicacion = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          alt: position.coords.altitude
-        };
-        setRutaGps((rutaAnterior) => [...rutaAnterior, nuevaUbicacion]);
-        setUbicacionActual(nuevaUbicacion);
-      },
-      (error) => {
-        console.error('Error al obtener la ubicación:', error.message);
-        setError('Error al obtener la ubicación.');
-      },
-      { enableHighAccuracy: true }
-    );
-  
-    setSeguimientoActivo(true);
-    setWatchId(watchId); 
-  };
-  
- 
-  const detenerRuta = () => {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
+  // Modales y Mensajes
+  const [isHitoModalOpen, setIsHitoModalOpen] = useState(false);
+  const [isRutaModalOpen, setIsRutaModalOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [mensaje, setMensaje] = useState('');
+
+  const correoGuia = localStorage.getItem('correo');
+
+
+
+  // BOTON STOP
+  const prepararFinalizarRuta = () => {
+    pausarRuta();
+    if (rutaGps.length < 2) {
+      setError('No hay suficientes puntos GPS grabados para guardar la ruta.');
       setSeguimientoActivo(false);
+      return;
     }
+    // Abrir modal de datos de ruta
+    setIsRutaModalOpen(true);
   };
 
-  // Finalizar la ruta
-  const finalizarRuta = async () => {
+  const guardarRutaFinal = async () => {
     if (!datosRuta.nombre || !datosRuta.descripcion) {
-      setError('Por favor completa todos los campos antes de guardar la ruta.');
-      return;
-    }
-    try {
-      const geojsonRuta = {
-        type: 'LineString',
-        coordinates: rutaGps.map((punto) => [punto.lng, punto.lat]), 
-      };
-      const response = await axios.post('/api/admin/rutas/', {
-        ...datosRuta,
-        distancia_km: calcularDistancia(rutaGps),
-        tiempo_estimado: '00:30:00', 
-        correo_usuario: 'admin@naturaltrekking.cl', 
-        ruta_gps: JSON.stringify(geojsonRuta),
-      });
-      setMensaje('Ruta guardada exitosamente.');
-      setDatosRuta({ nombre: '', descripcion: '', dificultad: 'Nivel Dificultad' }); 
-      cargarRutasGuardadas(); 
-      console.log('Ruta guardada:', response.data);
-    } catch (error) {
-      console.error('Error al guardar la ruta:', error.message);
-      setError('Error al guardar la ruta.');
-    }
-  };
-
-  // Calcular distancia total de la ruta
-  const calcularDistancia = (puntos) => {
-    if (puntos.length < 2) return 0;
-
-    const R = 6371; 
-    const toRad = (value) => (value * Math.PI) / 180;
-
-    let distanciaTotal = 0;
-    for (let i = 1; i < puntos.length; i++) {
-      const { lat: lat1, lng: lng1 } = puntos[i - 1];
-      const { lat: lat2, lng: lng2 } = puntos[i];
-
-      const dLat = toRad(lat2 - lat1);
-      const dLng = toRad(lng2 - lng1);
-
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      distanciaTotal += R * c;
-    }
-
-    return distanciaTotal.toFixed(2); // Retorna en km
-  };
-
-  //Eliminacion Rutas
-  const eliminarRuta = async (nombre) => {
-    try {
-      const response = await axios.delete(`/api/admin/rutas/${nombre}`);
-      console.log(response.data.mensaje);
-      setDatosRuta(rutaGps.filter(rutas => rutas.nombre !== nombre)); 
-    } catch (error) {
-      console.error('Error al eliminar ruta:', error);
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagenUrlHito(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  //Agregar Hitos
-  const agregarHito = () => {
-    if (!ubicacionActual) {
-      setError('Ubicación no disponible.');
+      setError('Por favor, ingresa el nombre y la descripción de la ruta.');
       return;
     }
 
-    const hito = {
-      nombre: nombreHito,
-      descripcion: descripcionHito,
-      ubicacion: { lat: ubicacionActual.lat, lng: ubicacionActual.lng }, 
-      imagen_url: imagenUrlHito || null, 
+    const geojsonRuta = { type: 'LineString', coordinates: rutaGps.map(p => [p.lng, p.lat]) };
+    
+    const payloadRuta = {
+      ...datosRuta,
+      distancia_km: currentDist,
+      tiempo_estimado: formatTime(tiempoGrabacion), 
+      correo_usuario: correoGuia, 
+      ruta_gps: JSON.stringify(geojsonRuta),
     };
 
-    setHitos([...hitos, hito]);
-    setNombreHito('');  
-    setDescripcionHito('');
-    setImagenUrlHito('');
-    setMensaje('Hito agregado exitosamente.');
-  };
-//-------------------------Visualizaciones-----------------------//
-return (
-  <div>
-      <header className="app-header">
-      <img src="/img/LogoNT.png" alt="Logo de NaturalTrekking" />
-      <h1>NaturalTrekking</h1>
-    </header>
-  <div className="contenedor-rutas">
-    <h2>Gestionar Rutas</h2>
-    <div>
-      <label>Nombre:</label>
-      <input
-        type="text"
-        name="nombre"
-        value={datosRuta.nombre}
-        onChange={handleInputChange}
-        required
-      />
-
-      <label>Descripción:</label>
-      <input
-        type="text"
-        name="descripcion"
-        value={datosRuta.descripcion}
-        onChange={handleInputChange}
-        required
-      />
-
-      <label>Dificultad:</label>
-      <select
-        name="dificultad"
-        value={datosRuta.dificultad}
-        onChange={handleInputChange}
-      >
-        <option value="baja">Baja</option>
-        <option value="media">Media</option>
-        <option value="alta">Alta</option>
-      </select>
-    </div>
-    <div className="botones">
-  <button onClick={iniciarRuta} disabled={seguimientoActivo}className="boton-iniciar">
-  <img src='/img/play.png' alt="inicio"/>Iniciar Ruta</button>
-  <button onClick={detenerRuta} disabled={!seguimientoActivo}className="boton-detener">
-  <img src='/img/pausa.png' alt="pausa"/>Detener Ruta</button>
-  <button onClick={finalizarRuta} disabled={!rutaGps.length}className="boton-finalizar">
-  <img src='/img/final.png' alt="final"/>fanalizar</button>  
-</div>
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-    {mensaje && <p style={{ color: 'green' }}>{mensaje}</p>}
-
-    <MapaRuta rutaGps={rutaGps} ubicacionActual={ubicacionActual} />
-    <h3>Agregar Un hito</h3>
-    <div>
-    <form onSubmit={(e) => { e.preventDefault(); agregarHito(); }}>
-            <label>
-              Nombre de la Ruta:
-              <input type="text" value={nombreRuta} onChange={(e) => setNombreRuta(e.target.value)} required />
-            </label>
-          <label>
-            Nombre del Hito:
-            <input type="text" value={nombreHito} onChange={(e) => setNombreHito(e.target.value)} required />
-          </label>
-          <label>
-            Descripción del Hito:
-            <textarea value={descripcionHito} onChange={(e) => setDescripcionHito(e.target.value)} required />
-          </label>
-          <label>
-            Imagen del Hito:
-            <input type="file" accept="image/*" capture="camera" onChange={handleImageChange} />
-          </label>
-          <button onClick={agregarHito}className="boton-hito">
-      <img src='/img/hito.png' alt="senderismo"/>Agregar Hito
-      </button>
-        </form>
-
-    </div>
+    try {
+      await axios.post('/api/admin/rutas/', payloadRuta);
+      for (let hito of hitosLocales) {
+        const wktPoint = `POINT(${hito.lng} ${hito.lat})`;
+        await axios.post('/api/admin/hitos', {
+          nombre: hito.nombre, descripcion: hito.descripcion,
+          ubicacion: wktPoint, imagen_url: hito.imagen_url,
+          nombre_ruta: datosRuta.nombre
+        });
+      }
+      setMensaje('¡Ruta guardada en la nube con éxito!');
+      setTimeout(() => navigate('/admin/rutas'), 2000);
+    } catch (error) {
+      console.error('Offline save', error);
+      const pendientes = JSON.parse(localStorage.getItem('rutas_pendientes')) || [];
+      pendientes.push({ ruta: payloadRuta, hitos: hitosLocales });
+      localStorage.setItem('rutas_pendientes', JSON.stringify(pendientes));
+      setMensaje('Offline: Ruta guardada en tu celular.');
+      setTimeout(() => navigate('/admin/rutas'), 2000);
+    }
     
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-    {mensaje && <p style={{ color: 'green' }}>{mensaje}</p>}
-    <div className="routes-container">
-    <h3>Rutas Guardadas</h3>
-    {rutasGuardadas.length > 0 ? (
-      <ul>
-        {rutasGuardadas.map((rutas) => (
-          <li key={rutas.nombre} className="lista-rutas">
-            <div className="route-detail">
-              <strong>Nombre:</strong> {rutas.nombre}
-            </div>
-            <div className="route-detail">
-              <strong>Descripción:</strong> {rutas.descripcion}
-            </div>
-            <div className="route-detail">
-              <strong>Distancia:</strong> {rutas.distancia_km} km
-            </div>
-              <h4>Hitos agregados:</h4>
-              <ul>
-                {hitos.map((h, idx) => (
-                  <li key={idx}>
-                    {h.nombre} - {h.descripcion}
-                  </li>
-                ))}
-              </ul>
-            <div class="botones">
-              <button onClick={() => cargarRutaEnMapa(rutas.nombre)}className="boton-detalle">
-              <img src='/img/info.png' alt="localizacion"/>Detalles Sobre la ruta</button>
-              <button onClick={() => eliminarRuta(rutas.nombre)}className="boton-eliminar">
-              <img src="/img/eliminar.png" alt="eliminar ruta"/>Eliminar ruta</button>              
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No hay rutas guardadas.</p>
-    )}
-  </div>
-  </div>
-  </div>
-);
+    resetRuta();
+    setIsRutaModalOpen(false);
+  };
+
+  // CAPTURA DE HITOS
+  const abrirCamaraHito = async () => {
+    try {
+      const image = await CapCamera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+        direction: 'REAR' // Camara trasera por defecto
+      });
+      setFotoHitoUrl(image.dataUrl);
+      setNombreHito('');
+      setDescripcionHito('');
+      setIsHitoModalOpen(true);
+    } catch (e) {
+      console.error("Error al abrir la cámara", e);
+      setError("No se pudo abrir la cámara.");
+    }
+  };
+
+  const guardarHitoModal = () => {
+    if(!nombreHito || !descripcionHito) {
+      setError("Completa nombre y nota del hito");
+      return;
+    }
+    const ubicacionHito = ubicacionActual || { lat: -33.4569, lng: -70.6482 }; // fallback
+    setHitosLocales(prev => [...prev, { ...ubicacionHito, nombre: nombreHito, descripcion: descripcionHito, imagen_url: fotoHitoUrl }]);
+    setIsHitoModalOpen(false);
+    setFotoHitoUrl(null);
+    setError('');
+  };
 
 
+
+  return (
+    <div style={{height: '100vh', width: '100vw', overflow: 'hidden', position: 'relative', background: '#000'}}>
+      
+      {/* Botón Volver Flotante y Transparente (NO PAUSA LA RUTA) */}
+      <button 
+        style={{position: 'absolute', top: '15px', right: '15px', zIndex: 9999, background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', backdropFilter: 'blur(5px)'}}
+        onClick={() => navigate('/admin/rutas')}
+      >
+        <ArrowLeft size={24} />
+      </button>
+
+      {/* Mapa a Pantalla Completa */}
+      <div style={{height: '100%', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1}}>
+        <MapaRuta rutaGps={rutaGps} ubicacionActual={ubicacionActual} hitos={hitosLocales} height="100%" />
+      </div>
+
+      {/* HUD (Heads Up Display) */}
+      {seguimientoActivo && (
+        <div className="hud-top" style={{position: 'absolute', zIndex: 9999, top: '15px'}}>
+          <div className="hud-stat">
+            <span>Tiempo</span>
+            <strong>{formatTime(tiempoGrabacion)}</strong>
+          </div>
+          <div className="hud-stat" style={{borderLeft: '1px solid rgba(255,255,255,0.2)', borderRight: '1px solid rgba(255,255,255,0.2)'}}>
+            <span>Distancia</span>
+            <strong>{currentDist} km</strong>
+          </div>
+          <div className="hud-stat">
+            <span>Hitos</span>
+            <strong>{hitosLocales.length}</strong>
+          </div>
+        </div>
+      )}
+
+      {/* Mensajes de feedback flotantes */}
+      {mensaje && <div style={{position:'absolute', top:'80px', left:'50%', transform:'translateX(-50%)', zIndex:9999, background:'var(--accent-color)', color:'white', padding:'10px 20px', borderRadius:'20px', boxShadow:'0 4px 6px rgba(0,0,0,0.3)'}}>{mensaje}</div>}
+      {error && <div style={{position:'absolute', top:'80px', left:'50%', transform:'translateX(-50%)', zIndex:9999, background:'var(--danger-color)', color:'white', padding:'10px 20px', borderRadius:'20px', boxShadow:'0 4px 6px rgba(0,0,0,0.3)'}}>{error}</div>}
+
+      {/* Controles Flotantes Inferiores */}
+      <div style={{position: 'absolute', bottom: '30px', left: '0', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', zIndex: 9999}}>
+        
+        {!seguimientoActivo ? (
+          // Botón INICIAR GIGANTE
+          <button 
+            onClick={iniciarRuta}
+            style={{background: 'var(--accent-color)', color: 'white', border: 'none', borderRadius: '50px', padding: '15px 40px', fontSize: '1.2rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 8px 15px rgba(34, 197, 94, 0.4)', cursor: 'pointer', transition: 'all 0.3s ease'}}
+          >
+            <Play size={24} /> EMPEZAR RUTA
+          </button>
+        ) : (
+          // Controles de grabación
+          <>
+            {/* PAUSA / REANUDAR */}
+            {isPaused ? (
+              <button onClick={iniciarRuta} style={{background: 'var(--accent-color)', color: 'white', border: 'none', borderRadius: '50%', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.3)'}}>
+                <Play size={32} style={{marginLeft: '4px'}} />
+              </button>
+            ) : (
+              <button onClick={pausarRuta} style={{background: '#f59e0b', color: 'white', border: 'none', borderRadius: '50%', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.3)'}}>
+                <Pause size={32} />
+              </button>
+            )}
+
+            {/* STOP / TERMINAR */}
+            <button onClick={prepararFinalizarRuta} style={{background: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '50%', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.3)'}}>
+              <Square size={28} />
+            </button>
+
+            {/* CAMARA (HITO) */}
+            <button onClick={abrirCamaraHito} disabled={isPaused} style={{background: '#3b82f6', color: 'white', border: 'none', borderRadius: '50%', width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.3)', opacity: isPaused ? 0.5 : 1}}>
+              <Camera size={32} />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Modal Datos de Hito */}
+      {isHitoModalOpen && (
+        <div className="modal-overlay" style={{zIndex: 10000}}>
+          <div className="modal-content glass-panel" style={{width: '90%', maxWidth: '400px'}}>
+            <h3 style={{marginTop: 0, color: 'var(--accent-color)'}}>Detalles del Hito</h3>
+            {fotoHitoUrl && (
+              <div style={{width: '100%', height: '150px', borderRadius: '8px', backgroundImage: `url(${fotoHitoUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', marginBottom: '15px'}} />
+            )}
+            <label>Nombre del Hito:
+              <input type="text" value={nombreHito} onChange={(e)=>setNombreHito(e.target.value)} placeholder="Ej: Mirador Cóndor" />
+            </label>
+            <label>Descripción / Nota:
+              <textarea value={descripcionHito} onChange={(e)=>setDescripcionHito(e.target.value)} placeholder="Ej: Vista despejada al valle..." rows="3" />
+            </label>
+            <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
+              <button className="danger" onClick={() => { setIsHitoModalOpen(false); setFotoHitoUrl(null); }}>Cancelar</button>
+              <button className="primary" onClick={guardarHitoModal} style={{flex:1}}>Guardar Hito</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Datos de Ruta Final */}
+      {isRutaModalOpen && (
+        <div className="modal-overlay" style={{zIndex: 10000}}>
+          <div className="modal-content glass-panel" style={{width: '90%', maxWidth: '400px'}}>
+            <h3 style={{marginTop: 0, color: 'var(--accent-color)'}}>¡Ruta Terminada!</h3>
+            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>Recorriste {currentDist} km en {formatTime(tiempoGrabacion)}. Ingresa los datos finales para guardarla.</p>
+            
+            <label>Nombre de Ruta:
+              <input type="text" value={datosRuta.nombre} onChange={(e) => setDatosRuta({...datosRuta, nombre: e.target.value})} placeholder="Ej: Sendero Los Peumos" required />
+            </label>
+            <label>Dificultad:
+              <select value={datosRuta.dificultad} onChange={(e) => setDatosRuta({...datosRuta, dificultad: e.target.value})}>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </label>
+            <label>Descripción:
+              <textarea value={datosRuta.descripcion} onChange={(e) => setDatosRuta({...datosRuta, descripcion: e.target.value})} placeholder="Detalles de la ruta..." rows="3" required />
+            </label>
+            <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
+              <button className="danger" onClick={() => setIsRutaModalOpen(false)}>Cancelar</button>
+              <button className="primary" onClick={guardarRutaFinal} style={{flex:1}}>Subir Ruta</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+    </div>
+  );
 };
 
 export default ManejoRutas;

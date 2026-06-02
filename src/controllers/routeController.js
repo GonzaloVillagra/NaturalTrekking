@@ -7,7 +7,7 @@ require ('dotenv').config
 const obtenerRutas = async (req, res) => {
   try {
     const query = `
-        SELECT nombre, descripcion, distancia_km, tiempo_estimado, dificultad, 
+        SELECT nombre, descripcion, distancia_km, tiempo_estimado, dificultad, tipo_ruta,
         ST_AsGeoJSON(ruta_gps) AS ruta_gps,
         ST_AsGeoJSON(ST_StartPoint(ruta_gps)) AS inicio,
         ST_AsGeoJSON(ST_EndPoint(ruta_gps)) AS fin
@@ -89,17 +89,29 @@ const obtenerRutaDesdeAPI = async (req, res) => {
   }
 };
 
-// Agregar Ruta
 const agregarRuta = async (req, res) => {
-  const { nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps } = req.body;
+  const { nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps, tipo_ruta } = req.body;
 
   try {
-    const query = `
-      INSERT INTO rutas (nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps)
-      VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromGeoJSON($7))
-      RETURNING *;
-    `;
-    const valores = [nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps];
+    let query, valores;
+    
+    if (tipo_ruta === 'urbano') {
+      // Rutas urbanas pueden no tener track GPS continuo
+      query = `
+        INSERT INTO rutas (nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, tipo_ruta)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;
+      `;
+      valores = [nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, tipo_ruta];
+    } else {
+      query = `
+        INSERT INTO rutas (nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps, tipo_ruta)
+        VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromGeoJSON($7), $8)
+        RETURNING *;
+      `;
+      valores = [nombre, descripcion, distancia_km, tiempo_estimado, dificultad, correo_usuario, ruta_gps, tipo_ruta || 'trekking'];
+    }
+    
     const { rows } = await pool.query(query, valores);
     res.status(201).json(rows[0]);
   } catch (error) {

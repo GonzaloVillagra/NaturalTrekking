@@ -1,60 +1,68 @@
-.app-header {
-  background-color: #174563; 
-  color: rgb(255, 255, 255);            
-  padding: 10px 20px;
+.admin-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  padding: 40px;
+  box-shadow: var(--box-shadow);
   text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.admin-panel h1 {
+  font-size: 2.2rem;
   margin-bottom: 30px;
 }
 
+.admin-panel nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: 0 auto;
+}
 
-.admin-panel {
-    padding: 20px;
-    background-color: #f4f4f4;
-  }
-  
-  .admin-panel h1 {
-    color: #333;
-    font-size: 24px;
-    text-align: center;
-  }
-  
-  .admin-panel nav {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
+.admin-panel nav button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+}
 
+.admin-panel nav button:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  transform: scale(1.02);
+}
 
-  .admin-panel {
-    padding: 20px;
-    margin: auto;
-    max-width: 600px; 
-  }
-  
-  .admin-panel h1 {
-    text-align: center;
-  }
-  
-  .admin-panel nav {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    gap: 10px;
-  }
-  
-  .admin-panel button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #174563;
-    color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  .admin-panel button:hover {
-    background-color: #216089;
-  }
-  
-  
+/* For grid cards if they are used elsewhere */
+.menu-card {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 30px 20px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--glass-border);
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-main);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-color);
+  box-shadow: 0 10px 20px -3px rgba(16, 185, 129, 0.2);
+}

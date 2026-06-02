@@ -6,9 +6,10 @@ const axios = require('axios');
 
 // Obtener todos los guías
 const obtenerGuia = async (req, res) => {
+  const { correo } = req.params;
   try {
-    const query = 'SELECT correo, nombre FROM usuarios WHERE tipo = $1';
-    const { rows } = await pool.query(query, ['guia']);
+    const query = 'SELECT correo, nombre FROM usuarios WHERE tipo = $1 AND correo = $2';
+    const { rows } = await pool.query(query, ['guia', correo]);
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error al obtener guías:', error.message);
@@ -63,4 +64,37 @@ const crearComentario = async (req, res) => {
   }
 };
 
-module.exports = {obtenerGuia, obtenerRutasPorCorreo, obtenerTransportesPorCorreo, crearComentario};
+// obtener tours programados del guia
+const obtenerToursDelGuia = async (req, res) => {
+  const { correo } = req.params;
+  try {
+    const query = `
+      SELECT t.*, r.coordenadas, r.dificultad, tr.vehiculo, tr.capacidad, tr.nombre_conductor, tr.lugar_partida, tr.hora_partida
+      FROM tours_programados t
+      LEFT JOIN rutas r ON t.nombre_ruta = r.nombre
+      LEFT JOIN transportes tr ON t.patente_transporte = tr.patente
+      WHERE t.correo_guia = $1
+      ORDER BY t.fecha_viaje ASC
+    `;
+    const { rows } = await pool.query(query, [correo]);
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error al obtener tours:', error.message);
+    res.status(500).json({ mensaje: 'Error al obtener tours' });
+  }
+};
+
+// obtener pasajeros de un tour
+const obtenerPasajerosPorTour = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = 'SELECT * FROM turistas WHERE tour_id = $1 ORDER BY nombre_completo ASC';
+    const { rows } = await pool.query(query, [id]);
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error al obtener pasajeros:', error.message);
+    res.status(500).json({ mensaje: 'Error al obtener pasajeros' });
+  }
+};
+
+module.exports = {obtenerGuia, obtenerRutasPorCorreo, obtenerTransportesPorCorreo, crearComentario, obtenerToursDelGuia, obtenerPasajerosPorTour};
